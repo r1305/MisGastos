@@ -30,6 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.lenovo.misgastos.Utils.SessionManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     private UserLoginTask mAuthTask = null;
-
+    SessionManager session;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -53,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        session=new SessionManager(this);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -78,7 +82,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        session.createLoginSession(mEmailView.getText().toString());
+        Intent i=new Intent(this,MainActivity.class);
+        startActivity(i);
+        this.finish();
+        /*if (mAuthTask != null) {
             return;
         }
 
@@ -110,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-        }
+        }*/
     }
 
     private boolean isPasswordValid(String password) {
@@ -244,9 +252,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                session.createLoginSession(mEmail);
                 Intent i=new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(i);
-                //finish();
+                LoginActivity.this.finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="Registrar" />
 
+    <item
+        android:id="@+id/navigation_web_view"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="@string/title_web_view" />
+
 </menu>

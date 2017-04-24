@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.lenovo.misgastos.Utils.SessionManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,7 @@ public class GastosRecycler  extends RecyclerView.Adapter<GastosRecycler.ViewHol
 
 
     List<JSONObject> list=new ArrayList<>();
+
 
     public GastosRecycler(List<JSONObject> list) {
         this.list = list;
