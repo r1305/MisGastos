@@ -1,5 +1,6 @@
 package com.example.lenovo.misgastos;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,14 @@ public class GastosRecycler  extends RecyclerView.Adapter<GastosRecycler.ViewHol
 
         try {
             holder.descripcion.setText(o.get("desc").toString().toUpperCase());
-            holder.monto.setText("S/."+o.get("monto").toString());
+            if(o.getDouble("monto")>0){
+                holder.monto.setText("S/ +"+o.get("monto").toString());
+                holder.monto.setTextColor(Color.GREEN);
+            }else{
+                holder.monto.setText("S/ "+o.get("monto").toString());
+                holder.monto.setTextColor(Color.RED);
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

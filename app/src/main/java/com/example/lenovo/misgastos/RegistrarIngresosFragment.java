@@ -1,18 +1,15 @@
 package com.example.lenovo.misgastos;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -23,41 +20,31 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lenovo.misgastos.Utils.SessionManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 
-public class RegisterFragment extends Fragment {
+public class RegistrarIngresosFragment extends Fragment {
 
     Button save;
     EditText id, monto, desc, fecha;
-    Spinner categoria;
     SessionManager session;
     String idU;
 
-    public RegisterFragment() {
+    public RegistrarIngresosFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance() {
-        RegisterFragment fragment = new RegisterFragment();
+    public static RegistrarIngresosFragment newInstance() {
+        RegistrarIngresosFragment fragment = new RegistrarIngresosFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListarCategorias();
         session = new SessionManager(getActivity());
         HashMap<String, String> datos = session.getUserDetails();
         idU = datos.get(SessionManager.KEY_ID);
@@ -68,12 +55,11 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_register, container, false);
+        View v = inflater.inflate(R.layout.fragment_registrar_ingresos, container, false);
         save = (Button) v.findViewById(R.id.form_guardar);
         id = (EditText) v.findViewById(R.id.form_id);
         monto = (EditText) v.findViewById(R.id.form_monto);
         desc = (EditText) v.findViewById(R.id.form_desc);
-        categoria = (Spinner) v.findViewById(R.id.form_category);
         fecha = (EditText) v.findViewById(R.id.form_fecha);
 
         if(idU!="id"){
@@ -112,18 +98,17 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
                 String m = monto.getText().toString();
                 String d = desc.getText().toString();
-                String c =(String) categoria.getSelectedItem();
                 String f=fecha.getText().toString();
-                RegistrarGasto(idU, m, d, c,f);
+                RegistrarIngreso(idU, m, d, "Abono",f);
             }
         });
         return v;
     }
 
-    public void RegistrarGasto(String id, final String m, String d, String c,String f) {
+    public void RegistrarIngreso(String id, final String m, String d, String c,String f) {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final String url = "https://gastos-service.herokuapp.com/GuardarGasto?id=" + id +
-                "&desc=" + d + "&monto=" + ("-"+m) + "&categoria=" + c+"&fecha="+f;
+                "&desc=" + d + "&monto=" + m + "&categoria=" + c+"&fecha="+f;
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -153,47 +138,6 @@ public class RegisterFragment extends Fragment {
         queue.add(getRequest);
     }
 
-    public void ListarCategorias() {
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        final String url = "https://gastos-service.herokuapp.com/ListarCategorias";
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // display response
-                        Log.d("Response", response.toString());
-                        //swipeContainer.setRefreshing(false);
-                        System.out.println("ListaFragment " + response);
-                        List<String> list = new ArrayList<>();
-                        try {
-                            JSONArray a = response.getJSONArray("data");
-                            for (int i = 0; i < a.length(); i++) {
-                                list.add(a.getJSONObject(i).getString("desc"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                                android.R.layout.simple_spinner_item, list);
-                        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        categoria.setAdapter(dataAdapter);
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                        //swipeContainer.setRefreshing(false);
-                    }
-                }
-        );
-
-        // add it to the RequestQueue
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 15,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(getRequest);
-    }
 
 }

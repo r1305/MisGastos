@@ -15,8 +15,10 @@
             android:id="@+id/toolbar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary">
-        </android.support.v7.widget.Toolbar>
+            android:background="@color/colorPrimary"
+            app:titleTextColor="#FFF"
+            app:subtitleTextColor="#fff"
+            app:popupTheme="@color/common_plus_signin_btn_text_dark_default"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -37,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
-                android:layout_above="@+id/navigation"></FrameLayout>
+                android:layout_above="@+id/navigation"/>
             <!--<android.support.design.widget.BottomNavigationView
                 android:id="@+id/navigation"
                 android:layout_width="match_parent"

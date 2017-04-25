@@ -29,6 +29,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/gastos_logo"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mis Gastos"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:textColor="#000"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

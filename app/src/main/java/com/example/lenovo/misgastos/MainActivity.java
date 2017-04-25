@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+        toolbar.setTitleTextColor(getResources().getColor(R.color.drawer));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.drawer));
+        toolbar.setNavigationIcon(R.drawable.gastos_logo);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, dl, toolbar, R.string.openDrawer,
                 R.string.closeDrawer) {
@@ -64,11 +67,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 super.onDrawerOpened(drawerView);
             }
         };
+        dl.setScrimColor(getResources().getColor(R.color.drawer));
+
         dl.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         nav.setNavigationItemSelectedListener(this);
         session = new SessionManager(this);
 
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Fragment newFragment;
+        newFragment = new ListaFragment().newInstance();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.content, newFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     @Override
@@ -103,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.commit();
                 dl.closeDrawers();
                 return true;
-            case R.id.navigation_notifications:
+            case R.id.navigation_gastos:
                     /*updateNavigationBarState(R.id.navigation_notifications);*/
                 newFragment = new RegisterFragment().newInstance();
                 // Replace whatever is in the fragment_container view with this fragment,
@@ -115,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.commit();
                 dl.closeDrawers();
                 return true;
-            case R.id.navigation_web_view:
+            case R.id.navigation_ingresos:
                     /*updateNavigationBarState(R.id.navigation_web_view);*/
-                newFragment = new WebViewFragment().newInstance();
+                newFragment = new RegistrarIngresosFragment().newInstance();
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
                 transaction.replace(R.id.content, newFragment);
