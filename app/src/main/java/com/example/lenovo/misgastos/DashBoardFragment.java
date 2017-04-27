@@ -172,7 +172,7 @@ public class DashBoardFragment extends Fragment {
                         // display response
                         Log.d("Response", response.toString());
                         //swipeContainer.setRefreshing(false);
-                        System.out.println("***** " + response);
+                        System.out.println("***** DashBoard" + response);
                         //SET DATAPOINTS
                         try {
                            ja= (JSONArray) response.get("data");
@@ -181,7 +181,14 @@ public class DashBoardFragment extends Fragment {
                             numValues=ja.length();
                             for (int i = 0; i < ja.length(); i++) {
                                 try {
-                                    d[i] = new DataPoint((i + 1), response.getJSONArray("data").getJSONObject(i).getDouble("monto"));
+                                    Log.d("monto: ",String.valueOf(response.getJSONArray("data").getJSONObject(i).getDouble("monto")));
+                                    if(response.getJSONArray("data").getJSONObject(i).getDouble("monto")<0){
+                                        Log.d("negativo","true");
+                                        d[i] = new DataPoint((i + 1), Math.abs(response.getJSONArray("data").getJSONObject(i).getDouble("monto")));
+                                    }else{
+                                        d[i]= new DataPoint((i + 1), 0);
+                                    }
+
                                 } catch (Exception e) {
                                     System.out.println("DATAPOINTS: " + e);
                                 }
@@ -230,10 +237,15 @@ public class DashBoardFragment extends Fragment {
 
                             for (int i = 0; i < numColumns; ++i) {
                                 Column column = new Column(values);
-                                values = new ArrayList<SubcolumnValue>();
+                                values = new ArrayList<>();
                                 for (int j = 0; j < numSubcolumns; ++j) {
-                                    values.add(new SubcolumnValue((float) response.getJSONArray("data").getJSONObject(i).getDouble("monto")
-                                            , ChartUtils.pickColor()));
+                                    if(response.getJSONArray("data").getJSONObject(i).getDouble("monto")<0){
+                                        values.add(new SubcolumnValue(Math.abs((float) response.getJSONArray("data").getJSONObject(i).getDouble("monto"))
+                                                , ChartUtils.pickColor()));
+                                    }else{
+                                        values.add(new SubcolumnValue(0, ChartUtils.pickColor()));
+                                    }
+
                                 }
 
 
@@ -263,9 +275,17 @@ public class DashBoardFragment extends Fragment {
                             /******************** Pie Chart *************************************/
                             List<SliceValue> values = new ArrayList<SliceValue>();
                             for (int i = 0; i < numValues; ++i) {
-                                double value=ja.getJSONObject(i).getDouble("monto");
-                                SliceValue sliceValue = new SliceValue((float)value, ChartUtils.pickColor());
-                                values.add(sliceValue);
+                                //System.out.println("entra al for");
+                                if(ja.getJSONObject(i).getDouble("monto")<0){
+                                    //System.out.println("entra al if");
+                                    double value=Math.abs(ja.getJSONObject(i).getDouble("monto"));
+                                    SliceValue sliceValue = new SliceValue((float)value, ChartUtils.pickColor());
+                                    values.add(sliceValue);
+                                }else{
+                                    SliceValue sliceValue = new SliceValue(0, ChartUtils.pickColor());
+                                    values.add(sliceValue);
+                                }
+
                             }
 
                             dataP = new PieChartData(values);
@@ -296,7 +316,7 @@ public class DashBoardFragment extends Fragment {
 
                             chartP.setPieChartData(dataP);
                         } catch (Exception e) {
-                            System.out.println(e);
+                            System.out.println("PieChart: "+e);
                         }
 
                     }

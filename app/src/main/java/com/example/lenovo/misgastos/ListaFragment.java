@@ -1,6 +1,7 @@
 package com.example.lenovo.misgastos;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -37,9 +39,10 @@ public class ListaFragment extends Fragment {
 
     private String idU;
     private SwipeRefreshLayout swipeRefreshLayout;
+    TextView saldo_txt;
 
-    RecyclerView gastos;
-    GastosRecycler adapter;
+    private RecyclerView gastos;
+    private GastosRecycler adapter;
 
     List<JSONObject> l = new ArrayList<>();
 
@@ -73,6 +76,7 @@ public class ListaFragment extends Fragment {
         swipeRefreshLayout=(SwipeRefreshLayout)v.findViewById(R.id.swipeContainer);
         gastos = (RecyclerView) v.findViewById(R.id.recycler_view_gastos);
         gastos.setLayoutManager(new LinearLayoutManager(getActivity()));
+        saldo_txt=(TextView)v.findViewById(R.id.saldo);
 
         session = new SessionManager(getActivity());
         adapter = new GastosRecycler(l);
@@ -100,16 +104,23 @@ public class ListaFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         // display response
                         Log.d("Response", response.toString());
-                        //swipeContainer.setRefreshing(false);
-                        System.out.println("ListaFragment " + response);
+
                         try {
                             l.clear();
-
+                            double saldo=0;
                             JSONArray ja = (JSONArray) response.get("data");
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject ob = (JSONObject) ja.get(i);
+                                saldo +=ob.getDouble("monto");
                                 l.add(ob);
                             }
+                            if(saldo>=0){
+                                saldo_txt.setText("S/ "+saldo);
+                                saldo_txt.setTextColor(Color.GREEN);
+                            }else{
+                                saldo_txt.setTextColor(Color.RED);
+                            }
+
                             adapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         } catch (Exception e) {
