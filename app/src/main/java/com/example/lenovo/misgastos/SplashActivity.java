@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.lenovo.misgastos.Utils.SessionManager;
 
@@ -22,13 +23,15 @@ public class SplashActivity extends AppCompatActivity {
         HashMap<String, String> datos = session.getUserDetails();
         idU = datos.get(SessionManager.KEY_ID);
 
+        //Toast.makeText(this, idU, Toast.LENGTH_SHORT).show();
+
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                if(idU!="id"){
+                if(idU!="id" && idU!=null && idU!=""){
                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(i);
                 }else{

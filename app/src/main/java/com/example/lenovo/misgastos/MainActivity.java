@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.commit();
                 dl.closeDrawers();
                 return true;
+            case R.id.navigation_logout:
+                session.logoutUser();
         }
         return true;
     }
