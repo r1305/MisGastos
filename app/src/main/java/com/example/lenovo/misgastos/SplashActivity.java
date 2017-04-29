@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                if(idU!="id" && idU!=null && idU!=""){
+                if(session.isLoggedIn()){
                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(i);
                 }else{
