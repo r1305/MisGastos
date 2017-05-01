@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -23,15 +23,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lenovo.misgastos.Utils.SessionManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
+
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +41,7 @@ public class RegisterFragment extends Fragment {
     Spinner categoria;
     SessionManager session;
     String idU;
+    String data;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -57,11 +56,11 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListarCategorias();
+        //ListarCategorias();
         session = new SessionManager(getActivity());
         HashMap<String, String> datos = session.getUserDetails();
         idU = datos.get(SessionManager.KEY_ID);
-
+        data=datos.get(SessionManager.KEY_CAT);
     }
 
     @Override
@@ -117,6 +116,24 @@ public class RegisterFragment extends Fragment {
                 RegistrarGasto(idU, m, d, c,f);
             }
         });
+
+        List<String> list = new ArrayList<>();
+        try {
+            JSONParser p=new JSONParser();
+            org.json.simple.JSONObject o=(org.json.simple.JSONObject)p.parse(data);
+            //Toast.makeText(getActivity(),o.toString(), Toast.LENGTH_SHORT).show();
+            org.json.simple.JSONArray a =(org.json.simple.JSONArray)o.get("data");
+            for (int i = 0; i < a.size(); i++) {
+                org.json.simple.JSONObject ob=(org.json.simple.JSONObject)a.get(i);
+                list.add(ob.get("desc").toString());
+            }
+        } catch (Exception e) {
+            Log.d("Register_Categorias",e.toString());
+        }
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoria.setAdapter(dataAdapter);
         return v;
     }
 
@@ -136,49 +153,6 @@ public class RegisterFragment extends Fragment {
                         monto.setText("");
                         desc.setText("");
                         fecha.setText("");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                        //swipeContainer.setRefreshing(false);
-                    }
-                }
-        );
-
-        // add it to the RequestQueue
-        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 15,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(getRequest);
-    }
-
-    public void ListarCategorias() {
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        final String url = "https://gastos-service.herokuapp.com/ListarCategorias";
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // display response
-                        Log.d("Response", response.toString());
-                        //swipeContainer.setRefreshing(false);
-                        System.out.println("ListaFragment " + response);
-                        List<String> list = new ArrayList<>();
-                        try {
-                            JSONArray a = response.getJSONArray("data");
-                            for (int i = 0; i < a.length(); i++) {
-                                list.add(a.getJSONObject(i).getString("desc"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                                android.R.layout.simple_spinner_item, list);
-                        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        categoria.setAdapter(dataAdapter);
-
                     }
                 },
                 new Response.ErrorListener() {

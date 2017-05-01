@@ -43,6 +43,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.lenovo.misgastos.Utils.SessionManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -63,6 +64,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+
+    //USER SESSION ATTRIBUTES
+    String name;
+    String e;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,8 +235,12 @@ public class LoginActivity extends AppCompatActivity {
                         // display response
                         Log.d("Response", response.toString());
 
+
                         try {
-                            session.createLoginSession(String.valueOf(response.getInt("id")));
+                            name=response.getString("nombre");
+                            e=response.getString("email");
+                            id=String.valueOf(response.getInt("id"));
+                            ListarCategorias();
                         } catch (Exception e) {
                             Toast.makeText(LoginActivity.this, "Erro de inicio de sesión", Toast.LENGTH_SHORT).show();
                             System.out.println("ListaFragmentError" + e);
@@ -241,6 +252,33 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error.Response", error.toString());
+                        //swipeContainer.setRefreshing(false);
+                    }
+                }
+        );
+
+        // add it to the RequestQueue
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 15,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(getRequest);
+    }
+    public void ListarCategorias() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        final String url = "https://gastos-service.herokuapp.com/ListarCategorias";
+
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Categorias",response.toString());
+
+                        session.createLoginSession(id,e,name,response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
                         Log.d("Error.Response", error.toString());
                         //swipeContainer.setRefreshing(false);
                     }

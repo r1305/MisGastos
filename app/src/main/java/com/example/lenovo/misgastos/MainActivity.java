@@ -13,8 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.lenovo.misgastos.Utils.SessionManager;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     NavigationView nav;
 
+    TextView nav_name,nav_email;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nav = (NavigationView) findViewById(R.id.navigation);
         dl = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        /***************HEADER************************/
+        View header=nav.getHeaderView(0);
+        nav_name=(TextView)header.findViewById(R.id.header_username);
+        nav_email=(TextView)header.findViewById(R.id.header_email);
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
         nav.setNavigationItemSelectedListener(this);
         session = new SessionManager(this);
+        HashMap<String, String> datos = session.getUserDetails();
+        nav_name.setText(datos.get(SessionManager.KEY_USERNAME));
+        nav_email.setText(datos.get(SessionManager.KEY_MAIL));
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         Fragment newFragment;

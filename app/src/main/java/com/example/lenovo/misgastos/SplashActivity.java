@@ -22,6 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         session = new SessionManager(this);
         HashMap<String, String> datos = session.getUserDetails();
         idU = datos.get(SessionManager.KEY_ID);
+        //Toast.makeText(this, datos.get(SessionManager.KEY_CAT), Toast.LENGTH_LONG).show();
 
         //Toast.makeText(this, idU, Toast.LENGTH_SHORT).show();
 
@@ -31,13 +32,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                if(session.isLoggedIn()){
-                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                    startActivity(i);
-                }else{
-                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(i);
-                }
+                session.checkLogin();
                 // close this activity
                 finish();
             }
