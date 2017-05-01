@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_margin="@dimen/activity_vertical_margin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="180dp"
+    android:background="@drawable/header_background"
+    >
     <!-- Imagen de perfil -->
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circle_image"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="16dp"
         android:layout_height="120dp"
         android:layout_width="120dp"
         android:scaleType="centerCrop"
@@ -19,18 +21,21 @@
     <!-- Nombre de Usuario -->
     <TextView
         android:id="@+id/header_username"
+        android:layout_marginLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         android:text="Juana Maria Perez"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textStyle="bold" />
 
     <!-- Correo de la cuenta -->
     <TextView
+        android:layout_marginLeft="16dp"
         android:id="@+id/header_email"
-        style="@style/Widget.AppCompat.Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         android:text="juanaperez01@gmail.com"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
